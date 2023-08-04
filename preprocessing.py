@@ -9,7 +9,7 @@ def kmerizer(sequencia: str, k: int = 4) -> np.ndarray:
     return k_seq
 
 
-def tokenizator(arr: list[int | np.ndarray], max_words: int, oov_tok_len: int = 4):
+def tokenizator(arr: list, max_words: int, oov_tok_len: int = 4):
     oov = 'n' * oov_tok_len
     tokenizer = Tokenizer(num_words=max_words, oov_token=oov)
     tokenizer.fit_on_texts(arr)
@@ -19,7 +19,7 @@ def tokenizator(arr: list[int | np.ndarray], max_words: int, oov_tok_len: int = 
     return sequences
 
 
-def zero_padder(arr: list[int | np.ndarray], pad_len: int = None) -> np.ndarray:
+def zero_padder(arr: list, pad_len: int = None) -> np.ndarray:
     """Appends zeros to inner arrays of list of arrays
     to desire padding length. If no padding length is provided,
     pads to the length of the longest array."""
