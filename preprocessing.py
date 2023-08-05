@@ -1,3 +1,4 @@
+import random
 import numpy as np
 from tensorflow.keras.preprocessing.text import Tokenizer
 
@@ -6,6 +7,11 @@ class Preprocessor:
     def __init__(self, kmer_len: int = 4):
         self.kmer_len = kmer_len
         self.oov_tok: str = 'n' * kmer_len
+
+    def cleaner(sequence: str) -> str:
+        nts = 'bdefhijklmopqrsuvwxyz'
+        translation_table = str.maketrans(nts, 'n'*len(nts))
+        return sequence.translate(translation_table)
 
     def kmerizer(self, sequencia: str, k: int = None) -> np.ndarray:
         """Creates a numpy array containing k-mers from a string"""
@@ -44,3 +50,20 @@ class Preprocessor:
         # Array padding
         padded = np.array([np.hstack((a, np.zeros(max_len - len(a)))) for a in arr])
         return padded
+
+
+class Sampler:
+    def seq_shuffler(sequencia: str) -> str:
+        sequencia = random.sample(sequencia, len(sequencia))
+        sequencia = ''.join(sequencia)
+        return sequencia
+
+    def create_reverse_complement(dna):
+        complement = {'a': 't', 'c': 'g', 'g': 'c', 't': 'a' }
+        return ''.join([complement[base] for base in dna[::-1]])
+
+    def create_random_seq(lmin: int = 100, lmax: int = 10_000):
+        length = random.randint(lmin, lmax)
+        characters = 'actg'
+        random_string = ''.join(random.choice(characters) for _ in range(length))
+        return random_string
