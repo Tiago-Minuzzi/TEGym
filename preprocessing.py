@@ -18,7 +18,7 @@ class Preprocessor:
         return sequence.translate(translation_table)
 
     def kmerizer(self, sequencia: str, k: int = None) -> np.ndarray:
-        """Creates a numpy array containing k-mers from a string"""
+        """Creates a numpy array containing k-mers from a string."""
 
         if k is None:
             k = self.kmer_len
@@ -27,7 +27,7 @@ class Preprocessor:
         return k_seq
 
     def tokenizator(self, arr: list, max_words: int = None):
-        """Transforms words/characters in numeric tokens"""
+        """Transforms words/characters in numeric tokens."""
         words = [j for i in arr for j in i]
 
         if not max_words:
@@ -45,7 +45,7 @@ class Preprocessor:
         to desire padding length. If no padding length is provided,
         pads to the length of the longest array."""
         # Get max length
-        max_len = max([len(i) for i in arr])
+        max_len = max((len(i) for i in arr))
         # If padding length is provided, max_len = pad_len
 
         if pad_len:
@@ -56,7 +56,7 @@ class Preprocessor:
         return padded
 
     def transform_label(self, labels: Iterable[str]) -> np.ndarray:
-        """Transform labels in string format into numerical data"""
+        """Transform labels in string format into numerical data."""
         encoder = LabelEncoder()
         return to_categorical(encoder.fit_transform(labels))
 
