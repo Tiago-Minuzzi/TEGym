@@ -23,8 +23,7 @@ class Preprocessor:
         if k is None:
             k = self.kmer_len
 
-        k_seq = [sequencia[i:i+k] for i in range(len(sequencia)-k+1)]
-        return k_seq
+        return [sequencia[i:i+k] for i in range(len(sequencia)-k+1)]
 
     def tokenizator(self, arr: list, max_words: int = None):
         """Transforms words/characters in numeric tokens."""
@@ -37,8 +36,7 @@ class Preprocessor:
         tokenizer.fit_on_texts(words)
 
         # Tokenize os dados e converta em sequências numéricas
-        sequences = tokenizer.texts_to_sequences(arr)
-        return sequences
+        return tokenizer.texts_to_sequences(arr)
 
     def zero_padder(self, arr: list, pad_len: int = None) -> np.ndarray:
         """Appends zeros to inner arrays of list of arrays
@@ -51,11 +49,9 @@ class Preprocessor:
         if pad_len:
             max_len = pad_len
 
-        # Array padding
-        padded = np.array([np.hstack((a, np.zeros(max_len - len(a)))) for a in arr])
-        return padded
+        return np.array([np.hstack((a, np.zeros(max_len - len(a)))) for a in arr])
 
-    def transform_label(self, labels: Iterable[str]) -> np.ndarray:
+    def transform_label(self, labels: Iterable) -> np.ndarray:
         """Transform labels in string format into numerical data."""
         encoder = LabelEncoder()
         return to_categorical(encoder.fit_transform(labels))
@@ -65,8 +61,7 @@ class Sampler:
     def seq_shuffler(self, sequencia: str) -> str:
         """Creates sample sequences by shuffling the input sequences."""
         sequencia = random.sample(sequencia, len(sequencia))
-        sequencia = ''.join(sequencia)
-        return sequencia
+        return ''.join(sequencia)
 
     def create_reverse_complement(self, dna):
         """Creates reverse complement sequence for data augmentation."""
@@ -77,5 +72,4 @@ class Sampler:
         """Creates random DNA sequences to use as sample."""
         length = random.randint(lmin, lmax)
         characters = 'actg'
-        random_string = ''.join(random.choice(characters) for _ in range(length))
-        return random_string
+        return ''.join(random.choice(characters) for _ in range(length))
