@@ -1,5 +1,8 @@
 import random
 import numpy as np
+from collections.abc import Iterable
+from sklearn.preprocessing import LabelEncoder
+from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.preprocessing.text import Tokenizer
 
 
@@ -51,6 +54,11 @@ class Preprocessor:
         # Array padding
         padded = np.array([np.hstack((a, np.zeros(max_len - len(a)))) for a in arr])
         return padded
+
+    def transform_label(self, labels: Iterable[str]) -> np.ndarray:
+        """Transform labels in string format into numerical data"""
+        encoder = LabelEncoder()
+        return to_categorical(encoder.fit_transform(labels))
 
 
 class Sampler:
