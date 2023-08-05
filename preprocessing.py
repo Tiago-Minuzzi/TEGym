@@ -9,6 +9,7 @@ class Preprocessor:
         self.oov_tok: str = 'n' * kmer_len
 
     def cleaner(sequence: str) -> str:
+        """Replaces any non 'actgn' base by 'n'."""
         nts = 'bdefhijklmopqrsuvwxyz'
         translation_table = str.maketrans(nts, 'n'*len(nts))
         return sequence.translate(translation_table)
@@ -54,15 +55,18 @@ class Preprocessor:
 
 class Sampler:
     def seq_shuffler(sequencia: str) -> str:
+        """Creates sample sequences by shuffling the input sequences."""
         sequencia = random.sample(sequencia, len(sequencia))
         sequencia = ''.join(sequencia)
         return sequencia
 
     def create_reverse_complement(dna):
-        complement = {'a': 't', 'c': 'g', 'g': 'c', 't': 'a' }
+        """Creates reverse complement sequence for data augmentation."""
+        complement = {'a': 't', 'c': 'g', 'g': 'c', 't': 'a'}
         return ''.join([complement[base] for base in dna[::-1]])
 
     def create_random_seq(lmin: int = 100, lmax: int = 10_000):
+        """Creates random DNA sequences to use as sample."""
         length = random.randint(lmin, lmax)
         characters = 'actg'
         random_string = ''.join(random.choice(characters) for _ in range(length))
