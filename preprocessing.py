@@ -1,3 +1,4 @@
+import pickle
 import random
 import numpy as np
 from collections.abc import Iterable
@@ -34,6 +35,9 @@ class Preprocessor:
 
         tokenizer = Tokenizer(num_words=max_words, oov_token=self.oov_tok)
         tokenizer.fit_on_texts(words)
+
+        with open('tokenizer.pkl', 'wb') as handle:
+            pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
         # Tokenize os dados e converta em sequências numéricas
         return tokenizer.texts_to_sequences(arr)
