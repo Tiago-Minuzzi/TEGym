@@ -63,10 +63,10 @@ class Sampler:
         sequencia = random.sample(sequencia, len(sequencia))
         return ''.join(sequencia)
 
-    def create_reverse_complement(self, dna) -> str:
+    def create_reverse_complement(self, dna: str) -> str:
         """Creates reverse complement sequence for data augmentation."""
         complement = {'a': 't', 'c': 'g', 'g': 'c', 't': 'a'}
-        return ''.join([complement[base] for base in dna[::-1]])
+        return ''.join([complement.get(base, 'n') for base in dna[::-1]])
 
     def create_random_sequences(self, n_seqs: int = 1, lmin: int = 100, lmax: int = 10_000) -> Iterable:
         """Creates random DNA sequences to use as sample."""
