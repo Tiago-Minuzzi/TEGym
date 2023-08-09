@@ -53,7 +53,7 @@ class Preprocessor:
         if pad_len:
             max_len = pad_len
 
-        return np.array([np.hstack((a, np.zeros(max_len - len(a)))) for a in arr])
+        return np.array([np.hstack((a[:pad_len], np.zeros(max_len - len(a[:pad_len])))) for a in arr])
 
     def transform_label(self, labels: Iterable) -> np.ndarray:
         """Transform labels in string format into numerical data."""
