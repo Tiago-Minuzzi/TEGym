@@ -48,9 +48,11 @@ class Preprocessor:
         pads to the length of the longest array."""
         # Get max length
         max_len = max((len(i) for i in arr))
-        # If padding length is provided, max_len = pad_len
 
+        # If padding length is provided, max_len = pad_len
         if pad_len:
+            if pad_len < max_len:
+                print(f">>> WARNING: Max len '{max_len}' longer than '{pad_len}'. Truncating.")
             max_len = pad_len
 
         return np.array([np.hstack((a[:pad_len], np.zeros(max_len - len(a[:pad_len])))) for a in arr])
