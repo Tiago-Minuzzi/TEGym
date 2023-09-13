@@ -64,8 +64,11 @@ class Preprocessor:
 
 
 class Sampler:
-    def seq_shuffler(self, sequencia: str) -> str:
+    def seq_shuffler(self, sequencia: str, state: int = None) -> str:
         """Creates sample sequences by shuffling the input sequences."""
+        if state:
+            random.seed(state)
+
         sequencia = random.sample(sequencia, len(sequencia))
         return ''.join(sequencia)
 
