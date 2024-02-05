@@ -77,9 +77,9 @@ class Sampler:
         complement = {'a': 't', 'c': 'g', 'g': 'c', 't': 'a'}
         return ''.join([complement.get(base, 'n') for base in dna[::-1]])
 
-    def create_random_sequences(self, n_seqs: int = 1, lmin: int = 100, lmax: int = 10_000) -> Iterable:
+    def create_random_sequences(self, n_seqs: int = 1, lmin: int = 200, lmax: int = 10_000) -> Iterable:
         """Creates random DNA sequences to use as sample."""
-        length = random.randint(lmin, lmax)
+        lengths = [ random.randint(lmin, lmax) for _ in range(n_seqs) ]
         characters = 'actg'
-        for _ in range(n_seqs):
-            yield ''.join(random.choice(characters) for _ in range(length))
+        for l in lengths:
+            yield ''.join(random.choice(characters) for _ in range(l))
