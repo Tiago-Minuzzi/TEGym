@@ -9,8 +9,8 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 
 class Preprocessor:
     def __init__(self, kmer_len: int = 4):
-        self.kmer_len = kmer_len
-        self.oov_tok: str = 'n' * kmer_len
+        self.kmer_len       = kmer_len
+        self.oov_tok: str   = 'n' * kmer_len
 
     def cleaner(self, sequence: str) -> str:
         """Replaces any non 'actgn' base by 'n'."""
@@ -77,9 +77,12 @@ class Sampler:
         complement = {'a': 't', 'c': 'g', 'g': 'c', 't': 'a'}
         return ''.join([complement.get(base, 'n') for base in dna[::-1]])
 
-    def create_random_sequences(self, n_seqs: int = 1, lmin: int = 200, lmax: int = 10_000) -> Iterable:
+    def create_random_sequences(self, n_seqs: int = 1, lmin: int = 200, lmax: int = 10_000, state: int = None) -> Iterable:
         """Creates random DNA sequences to use as sample."""
-        lengths = [ random.randint(lmin, lmax) for _ in range(n_seqs) ]
-        characters = 'actg'
+        if state:
+            random.seed(state)
+
+        lengths     = [ random.randint(lmin, lmax) for _ in range(n_seqs) ]
+        characters  = 'actg'
         for l in lengths:
             yield ''.join(random.choice(characters) for _ in range(l))
