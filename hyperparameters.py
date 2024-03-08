@@ -29,12 +29,6 @@ sys.stderr = stderr
 pd.options.mode.chained_assignment = None  # default='warn'
 
 # =============================================
-def seq_tokenizer(sequencia: str) -> list:
-    d = {'a': 1, 'c': 2, 'g': 3, 't': 4}
-    return [d.get(i, 5) for i in sequencia]
-
-
-# =============================================
 
 trainer         = Trainer()
 preprocessor    = Preprocessor()
@@ -122,7 +116,7 @@ default_params  = {'emb_dim':           6,
 combinations = list(product(*parameters.values()))
 h_params = random.sample(combinations, n_runs)
 
-padded_seqs = preprocessor.zero_padder(df.sequence.map(seq_tokenizer).values,
+padded_seqs = preprocessor.zero_padder(df.sequence.map(preprocessor.seq_tokenizer).values,
                                        default_params['seq_len'])
 
 labels      = preprocessor.transform_label(df[label_column])

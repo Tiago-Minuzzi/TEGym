@@ -20,6 +20,10 @@ class Preprocessor:
         translation_table = str.maketrans(nts, 'n'*len(nts))
         return sequence.translate(translation_table)
 
+    def seq_tokenizer(self, sequencia: str) -> list:
+        d: dict = {'a': 1, 'c': 2, 'g': 3, 't': 4}
+        return [d.get(i, 5) for i in sequencia]
+
     def kmerizer(self, sequencia: str, k: int = None) -> np.ndarray:
         """Creates a numpy array containing k-mers from a string."""
 
