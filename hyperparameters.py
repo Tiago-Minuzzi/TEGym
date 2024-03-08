@@ -20,12 +20,10 @@ from sklearn.utils.class_weight import compute_class_weight
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 stderr = sys.stderr
 sys.stderr = open(os.devnull, 'w')
+from neural_net import Trainer
 import tensorflow.random as tfrand
-from tensorflow.keras import backend as K
-from tensorflow.keras.models import Sequential
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.layers import Dense, Embedding, Conv1D, MaxPooling1D, Flatten, Dropout, LayerNormalization
 sys.stderr = stderr
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -40,48 +38,49 @@ def label_tokenizer(coluna: pd.Series) -> np.ndarray:
     return coluna.map(d).values
 
 
-def create_model(h_param: Dict[str, list], default_params: Dict[str, int], array_shape: int) -> Sequential:
-    K.clear_session()
-    model = Sequential()
+#def create_model(h_param: Dict[str, list], default_params: Dict[str, int], array_shape: int) -> Sequential:
+#    K.clear_session()
+#    model = Sequential()
+#
+#    model.add(Embedding(input_dim       = default_params["vocab_size"],
+#                        output_dim      = default_params['emb_dim'],
+#                        input_length    = array_shape,
+#                        mask_zero       = False))
+#
+#    model.add(Conv1D(filters            = h_param['conv1'],
+#                     kernel_size        = h_param['kernel_size'],
+#                     input_shape        = (array_shape, 1),
+#                     activation         = 'relu'))
+#    model.add(MaxPooling1D(pool_size    = h_param['pool_size']))
+#
+#    model.add(Conv1D(filters            = h_param['convN'],
+#                     kernel_size        = h_param['kernel_size'],
+#                     activation         = 'relu'))
+#    model.add(MaxPooling1D(pool_size    = h_param['pool_size']))
+#
+#    model.add(Conv1D(filters            = h_param['convN'],
+#                     kernel_size        = h_param['kernel_size'],
+#                     activation         = 'relu'))
+#    model.add(MaxPooling1D(pool_size    = h_param['pool_size']))
+#
+#    model.add(LayerNormalization())
+#    model.add(Flatten())
+#
+#    model.add(Dense(h_param['dense_neuron'],
+#                    activation = 'relu'))
+#
+#    model.add(Dropout(h_param["dropout"]))
+#
+#    model.add(Dense(default_params["vocab_size_lab"],
+#                    activation = 'softmax'))
+#
+#    model.compile(loss      = 'categorical_crossentropy',
+#                  optimizer = 'adam',
+#                  metrics   = ['accuracy'])
+#
+#    return model
 
-    model.add(Embedding(input_dim       = default_params["vocab_size"],
-                        output_dim      = default_params['emb_dim'],
-                        input_length    = array_shape,
-                        mask_zero       = False))
-
-    model.add(Conv1D(filters            = h_param['conv1'],
-                     kernel_size        = h_param['kernel_size'],
-                     input_shape        = (array_shape, 1),
-                     activation         = 'relu'))
-    model.add(MaxPooling1D(pool_size    = h_param['pool_size']))
-
-    model.add(Conv1D(filters            = h_param['convN'],
-                     kernel_size        = h_param['kernel_size'],
-                     activation         = 'relu'))
-    model.add(MaxPooling1D(pool_size    = h_param['pool_size']))
-
-    model.add(Conv1D(filters            = h_param['convN'],
-                     kernel_size        = h_param['kernel_size'],
-                     activation         = 'relu'))
-    model.add(MaxPooling1D(pool_size    = h_param['pool_size']))
-
-    model.add(LayerNormalization())
-    model.add(Flatten())
-
-    model.add(Dense(h_param['dense_neuron'],
-                    activation = 'relu'))
-
-    model.add(Dropout(h_param["dropout"]))
-
-    model.add(Dense(default_params["vocab_size_lab"],
-                    activation = 'softmax'))
-
-    model.compile(loss      = 'categorical_crossentropy',
-                  optimizer = 'adam',
-                  metrics   = ['accuracy'])
-
-    return model
-
+trainer = Trainer()
 
 # =============================================
 # Helper
@@ -211,23 +210,21 @@ with open(saida, "w+") as sd:
               end=".")
         print("\n")
 
-        model = create_model(h_param,
-                             default_params,
-                             in_shape)
+        model = trainer.create_model(h_param,
+                                     default_params,
+                                     in_shape)
 
         # Fit the model
-        history = model.fit(x_train,
-                            y_train,
-                            epochs              = h_param['epochs'],
-                            batch_size          = h_param['batch_size'],
-                            validation_data     = (x_test, y_test),
-                            verbose             = 1,
-                            shuffle             = True,
-                            class_weight        = pesos_dict
-                            )
+        history = trainer.model_fit(model       = model,
+                                    X_train     = x_train,
+                                    y_train     = y_train,
+                                    n_epochs    = h_param['epochs'],
+                                    n_batch     = h_param['batch_size'],
+                                    X_test      = x_test,
+                                    y_test      = y_test,
+                                    c_weights   = pesos_dict)
 
         metrics = {k: v[-1] for k, v in history.history.items()}
-        K.clear_session()
         gc.collect()
         h_param.update(default_params)
         h_param.update(metrics)
