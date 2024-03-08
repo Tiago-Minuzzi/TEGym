@@ -3,3 +3,8 @@ tester.py
 __pycache__/
 *.h5
 *.pkl
+*.csv
+*.fasta
+*.fas
+*.fa
+*.fna
