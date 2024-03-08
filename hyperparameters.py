@@ -86,7 +86,7 @@ def create_model(h_param: Dict[str, list], default_params: Dict[str, int], array
 # =============================================
 # Helper
 parser  = argparse.ArgumentParser(prog          = 'hyperparameters.py',
-                                      description   = "Search hyperparameteres for model training.")
+                                  description   = "Search hyperparameteres for model training.")
 
 group   = parser.add_mutually_exclusive_group(required = True)
 
@@ -107,11 +107,12 @@ parser.add_argument('-r',    '--runs',
                     help    = 'number of runs (tests) to find the hyperparameters.')
 
 parser.add_argument('-s',    '--split',
-                    default = .1,
+                    default = 0.1,
                     type    = float,
-                    help    = 'Portion of the dataset to use as validation set. The major portion is used for model training. Default=0.1 (10%).')
+                    help    = 'Portion of the dataset to use as validation set. The major portion is used for model training. Default=0.1.')
 
 args    = parser.parse_args()
+
 # =============================================
 
 # Set seed for model reproducibility
