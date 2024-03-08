@@ -1,8 +1,10 @@
 import pickle
 import random
 import numpy as np
+import pandas as pd
 from collections.abc import Iterable
 from sklearn.preprocessing import LabelEncoder
+from sklearn.utils.class_weight import compute_class_weight
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.preprocessing.text import Tokenizer
 
@@ -61,6 +63,17 @@ class Preprocessor:
         """Transform labels in string format into numerical data."""
         encoder = LabelEncoder()
         return to_categorical(encoder.fit_transform(labels))
+
+    def get_weight(self, label_column: pd.Series) -> dict:
+        d = {l: i for i, l in enumerate(label_column.unique())}
+        rotulos         = label_column.map(d).values
+        rotulos_unicos  = np.unique(rotulos)
+        pesos = compute_class_weight(
+                class_weight    = 'balanced',
+                classes         = rotulos_unicos,
+                y               = rotulos)
+        pesos_dict = dict(zip(rotulos_unicos, pesos))
+        return pesos_dict
 
 
 class Sampler:

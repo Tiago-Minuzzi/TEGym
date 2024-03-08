@@ -21,6 +21,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 stderr = sys.stderr
 sys.stderr = open(os.devnull, 'w')
 from neural_net import Trainer
+from preprocessing import Preprocessor
 import tensorflow.random as tfrand
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.preprocessing.sequence import pad_sequences
@@ -33,54 +34,10 @@ def seq_tokenizer(sequencia: str) -> list:
     return [d.get(i, 5) for i in sequencia]
 
 
-def label_tokenizer(coluna: pd.Series) -> np.ndarray:
-    d = {l:i for i,l in enumerate(coluna.unique())}
-    return coluna.map(d).values
+# =============================================
 
-
-#def create_model(h_param: Dict[str, list], default_params: Dict[str, int], array_shape: int) -> Sequential:
-#    K.clear_session()
-#    model = Sequential()
-#
-#    model.add(Embedding(input_dim       = default_params["vocab_size"],
-#                        output_dim      = default_params['emb_dim'],
-#                        input_length    = array_shape,
-#                        mask_zero       = False))
-#
-#    model.add(Conv1D(filters            = h_param['conv1'],
-#                     kernel_size        = h_param['kernel_size'],
-#                     input_shape        = (array_shape, 1),
-#                     activation         = 'relu'))
-#    model.add(MaxPooling1D(pool_size    = h_param['pool_size']))
-#
-#    model.add(Conv1D(filters            = h_param['convN'],
-#                     kernel_size        = h_param['kernel_size'],
-#                     activation         = 'relu'))
-#    model.add(MaxPooling1D(pool_size    = h_param['pool_size']))
-#
-#    model.add(Conv1D(filters            = h_param['convN'],
-#                     kernel_size        = h_param['kernel_size'],
-#                     activation         = 'relu'))
-#    model.add(MaxPooling1D(pool_size    = h_param['pool_size']))
-#
-#    model.add(LayerNormalization())
-#    model.add(Flatten())
-#
-#    model.add(Dense(h_param['dense_neuron'],
-#                    activation = 'relu'))
-#
-#    model.add(Dropout(h_param["dropout"]))
-#
-#    model.add(Dense(default_params["vocab_size_lab"],
-#                    activation = 'softmax'))
-#
-#    model.compile(loss      = 'categorical_crossentropy',
-#                  optimizer = 'adam',
-#                  metrics   = ['accuracy'])
-#
-#    return model
-
-trainer = Trainer()
+trainer         = Trainer()
+preprocessor    = Preprocessor()
 
 # =============================================
 # Helper
@@ -143,14 +100,7 @@ df          = pd.read_csv(arquivo, usecols=['sequence',label_column])
 
 
 # compute weights
-rotulos         = label_tokenizer(df[label_column])
-rotulos_unicos  = np.unique(rotulos)
-pesos = \
-    compute_class_weight(
-    class_weight    = 'balanced',
-    classes         = rotulos_unicos,
-    y               = rotulos)
-pesos_dict = dict(zip(rotulos_unicos, pesos))
+pesos_dict = preprocessor.get_weight(df[label_column])
 
 parameters      = {'conv1':          [32,   64,     128],
                    'convN':          [24,   32,     64],
@@ -172,11 +122,10 @@ default_params  = {'emb_dim':           6,
 combinations = list(product(*parameters.values()))
 h_params = random.sample(combinations, n_runs)
 
-padded_seqs = pad_sequences(df.sequence.map(seq_tokenizer).values,
-                            padding     = 'post',
-                            truncating  = 'post',
-                            maxlen      = default_params['seq_len'])
-labels      = to_categorical(label_tokenizer(df[label_column]))
+padded_seqs = preprocessor.zero_padder(df.sequence.map(seq_tokenizer).values,
+                                       default_params['seq_len'])
+
+labels      = preprocessor.transform_label(df[label_column])
 in_shape    = padded_seqs.shape[1]
 del df
 gc.collect()
