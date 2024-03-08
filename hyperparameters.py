@@ -89,14 +89,19 @@ group.add_argument('-c',    '--csv',
                     help    = '''Input CSV file containing columns "id", "label", "sequence".''')
 
 parser.add_argument('-t',    '--title',
-                    defaul  = 'TEgym',
+                    default = 'TEgym',
                     type    = str,
                     help    = 'Model identifier (optional).')
 
 parser.add_argument('-r',    '--runs',
                     default = 20,
                     type    = int,
-                    help    = 'Number of runs (tests) to find the hyperparameters.')
+                    help    = 'number of runs (tests) to find the hyperparameters.')
+
+parser.add_argument('-s',    '--split',
+                    default = .1,
+                    type    = float,
+                    help    = 'Portion of the dataset to use as validation set. The major portion is used for model training. Default=0.1 (10%).')
 
 args    = parser.parse_args()
 # =============================================
@@ -127,13 +132,12 @@ df          = pd.read_csv(arquivo, usecols=['sequence',label_column])
 # compute weights
 rotulos         = label_tokenizer(df[label_column])
 rotulos_unicos  = np.unique(rotulos)
-pesos = compute_class_weight(
+pesos = \
+    compute_class_weight(
     class_weight    = 'balanced',
     classes         = rotulos_unicos,
-    y               = rotulos
-)
+    y               = rotulos)
 pesos_dict = dict(zip(rotulos_unicos, pesos))
-
 
 parameters      = {'conv1':          [32,   64,     128],
                    'convN':          [24,   32,     64],
