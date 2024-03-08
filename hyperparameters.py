@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import gc
+import os
+import sys
 import time
 import pickle
 import random
@@ -14,12 +16,18 @@ from itertools import product
 from fasta_to_csv import fas_to_csv
 from sklearn.model_selection import train_test_split
 from sklearn.utils.class_weight import compute_class_weight
+# Hide warning messages
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+stderr = sys.stderr
+sys.stderr = open(os.devnull, 'w')
 import tensorflow.random as tfrand
 from tensorflow.keras import backend as K
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.layers import Dense, Embedding, Conv1D, MaxPooling1D, Flatten, Dropout, LayerNormalization
+sys.stderr = stderr
+pd.options.mode.chained_assignment = None  # default='warn'
 
 # =============================================
 def seq_tokenizer(sequencia: str) -> list:
@@ -124,6 +132,11 @@ if args.fasta:
 elif args.csv:
     arquivo = Path(args.csv)
 
+print('########################')
+print('###     Welcome      ###')
+print('### Starting program ###')
+print('########################\n')
+
 basename    = arquivo.stem
 saida       = f"hyperparams_{modelo_nome}_on_{basename}_in_{timestamp}.csv"
 df          = pd.read_csv(arquivo, usecols=['sequence',label_column])
@@ -189,9 +202,9 @@ with open(saida, "w+") as sd:
     for i, h_param in enumerate(h_params):
         i += 1
         h_param = dict(zip(keys, h_param))
-        print("###############")
+        print("################")
         print(f"### Round {i:2} ###")
-        print("###############")
+        print("################")
         print(*[str(k) + ": " + str(v) for k, v in h_param.items()],
               sep=", ",
               end=".")
