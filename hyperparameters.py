@@ -83,10 +83,10 @@ if args.fasta:
 elif args.csv:
     arquivo = Path(args.csv)
 
-print('########################')
-print('###     Welcome      ###')
-print('### Starting program ###')
-print('########################\n')
+print('##############################')
+print('###        Starting        ###')
+print('### hyperparameters search ###')
+print('##############################\n')
 
 basename    = arquivo.stem
 saida       = f"hyperparams_{modelo_nome}_on_{basename}_in_{timestamp}.csv"
@@ -96,35 +96,33 @@ df          = pd.read_csv(arquivo, usecols=['sequence',label_column])
 # compute weights
 pesos_dict = preprocessor.get_weight(df[label_column])
 
-parameters      = {'conv1':          [32,   64,     128],
-                   'convN':          [24,   32,     64],
-                   'kernel_size':    [6,    12],
-                   'pool_size':      [3,    6],
-                   'dense_neuron':   [32,   64,     128],
-                   'dropout':        [0.0,  0.2,    0.4],
-                   'batch_size':     [25,   50,     75],
-                   'epochs':         [15,   20]}
-
-default_params  = {'emb_dim':           6,
-                   'seq_len':           25_000,
-                   'val_split':         0.1,
-                   'vocab_size':        6,
-                   'vocab_size_lab':    len(df[label_column].unique()),
-                   'weights':           pesos_dict
-                   }
+parameters = {'conv1':             [32,   64,     128],
+              'convN':             [24,   32,     64],
+              'kernel_size':       [6,    12],
+              'pool_size':         [3,    6],
+              'dense_neuron':      [32,   64,     128],
+              'dropout':           [0.0,  0.2,    0.4],
+              'batch_size':        [25,   50,     75],
+              'epochs':            [15,   20],
+              'emb_dim':           [6],
+              'seq_len':           [25_000],
+              'val_split':         [0.1],
+              'vocab_size':        [6],
+              'vocab_size_lab':    [len(df[label_column].unique())],
+              'weights':           pesos_dict}
 
 combinations = list(product(*parameters.values()))
 h_params = random.sample(combinations, n_runs)
 
 padded_seqs = preprocessor.zero_padder(df.sequence.map(preprocessor.seq_tokenizer).values,
-                                       default_params['seq_len'])
+                                       parameters['seq_len'][0])
 
 labels      = preprocessor.transform_label(df[label_column])
 in_shape    = padded_seqs.shape[1]
 del df
 gc.collect()
 
-tamanho_teste = default_params["val_split"]
+tamanho_teste = parameters["val_split"][0]
 x_train, x_test, y_train, y_test = train_test_split(padded_seqs,
                                                     labels,
                                                     test_size       = tamanho_teste,
@@ -136,7 +134,7 @@ del padded_seqs, labels
 with open(saida, "w+") as sd:
     keys = list(parameters.keys())
     header = ",".join([*parameters.keys(),
-                       *default_params.keys(),
+                       *parameters.keys(),
                        "loss",
                        "accuracy",
                        "val_loss",
@@ -154,22 +152,20 @@ with open(saida, "w+") as sd:
         print("\n")
 
         model = trainer.create_model(h_param,
-                                     default_params,
                                      in_shape)
 
         # Fit the model
         history = trainer.model_fit(model       = model,
+                                    params_dict = h_param,
                                     X_train     = x_train,
                                     y_train     = y_train,
-                                    n_epochs    = h_param['epochs'],
-                                    n_batch     = h_param['batch_size'],
                                     X_test      = x_test,
                                     y_test      = y_test,
                                     c_weights   = pesos_dict)
 
         metrics = {k: v[-1] for k, v in history.history.items()}
         gc.collect()
-        h_param.update(default_params)
+        h_param.update(parameters)
         h_param.update(metrics)
         sd.write(f"{','.join([str(i) for i in h_param.values()])}\n")
         sd.flush()
