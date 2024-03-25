@@ -4,7 +4,9 @@ import subprocess
 import pandas as pd
 from pathlib import Path
 from neural_net import Trainer
+from fasta_to_csv import fas_to_csv
 from preprocessing import Preprocessor
+from sklearn.model_selection import train_test_split
 
 # =============================================
 tr              = Trainer()
@@ -59,6 +61,7 @@ n_split         = args.split
 # Files
 if args.fasta:
     infile = Path(args.fasta)
+    fas_to_csv(infile)
 elif args.csv:
     infile = Path(args.csv)
     hyper_option    = '--csv'
@@ -82,3 +85,27 @@ else:
                     '--title',      model_title,
                     '--runs',       str(n_runs),
                     '--split',      str(n_split)])
+# =============================================
+# Preprocessing
+df  = pd.read_csv(f"{infile.stem}.csv", usecols=['label', 'sequence'])
+W   = pp.get_weight(df['label'])
+X   = pp.zero_padder(df['sequence'].map(pp.seq_tokenizer))
+y   = pp.transform_label(df['label'])
+# =============================================
+# Train-test split
+x_train, x_test, y_train, y_test = train_test_split(X,
+                                                    y,
+                                                    stratify        = y,
+                                                    test_size       = n_split,
+                                                    random_state    = 13,
+                                                    shuffle         = True)
+# =============================================
+# Create model
+model   = tr.create_model(hp_dict, x_train.shape[1])
+fit     = tr.model_fit(model,
+                       hp_dict,
+                       x_train,
+                       y_train,
+                       x_test,
+                       y_test,
+                       W)

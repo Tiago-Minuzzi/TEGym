@@ -52,7 +52,7 @@ class Trainer:
 
         return model
 
-    def model_fit(self, model, params_dict, X_train, y_train, X_test, y_test, n_epochs, n_batch, c_weights):
+    def model_fit(self, model, params_dict, X_train, y_train, X_test, y_test, c_weights):
         history = model.fit(X_train,
                             y_train,
                             epochs          = params_dict['epochs'],
