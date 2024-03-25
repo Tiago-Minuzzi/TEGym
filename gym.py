@@ -67,6 +67,7 @@ elif args.csv:
     hyper_option    = '--csv'
 hyper_csv   = args.hyper
 prefix      = f"{args.title}_{infile.stem}"
+my_model    = f"{prefix}_{timestamp}.hdf5"
 hyper_out   = f"hyperparams_{prefix}_in_{timestamp}.csv"
 # =============================================
 if hyper_csv:
@@ -109,3 +110,5 @@ fit     = tr.model_fit(model,
                        x_test,
                        y_test,
                        W)
+
+fit.save(my_model)
