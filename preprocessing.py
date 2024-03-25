@@ -1,4 +1,3 @@
-import pickle
 import random
 import numpy as np
 import pandas as pd
@@ -6,7 +5,6 @@ from collections.abc import Iterable
 from sklearn.preprocessing import LabelEncoder
 from sklearn.utils.class_weight import compute_class_weight
 from tensorflow.keras.utils import to_categorical
-from tensorflow.keras.preprocessing.text import Tokenizer
 
 
 class Preprocessor:
@@ -31,22 +29,6 @@ class Preprocessor:
             k = self.kmer_len
 
         return [sequencia[i:i+k] for i in range(len(sequencia)-k+1)]
-
-    def tokenizator(self, arr: list, max_words: int = None):
-        """Transforms words/characters in numeric tokens."""
-        words = [j for i in arr for j in i]
-
-        if not max_words:
-            max_words = len(set(words))
-
-        tokenizer = Tokenizer(num_words=max_words, oov_token=self.oov_tok)
-        tokenizer.fit_on_texts(words)
-
-        with open('tokenizer.pkl', 'wb') as handle:
-            pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
-        # Tokenize os dados e converta em sequências numéricas
-        return tokenizer.texts_to_sequences(arr)
 
     def zero_padder(self, arr: list, pad_len: int = None) -> np.ndarray:
         """Appends zeros to inner arrays of list of arrays
