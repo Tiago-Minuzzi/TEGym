@@ -73,7 +73,7 @@ elif args.csv:
     hyper_option    = '--csv'
 hyper_csv   = args.hyper
 prefix      = f"{args.title}_{infile.stem}"
-my_model    = Path(f"{prefix}_{timestamp}.keras")
+my_model    = f"{prefix}_{timestamp}.keras"
 hyper_out   = Path(f"hyperparams_{prefix}_in_{timestamp}.csv")
 output_dir  = Path(f"{prefix}")
 # =============================================
@@ -128,4 +128,3 @@ if my_model.exists():
     if not output_dir.exists():
         output_dir.mkdir()
     move(my_model, output_dir)
-    move(hyper_out, output_dir)
