@@ -9,8 +9,8 @@ from preprocessing import Preprocessor
 from sklearn.model_selection import train_test_split
 
 # =============================================
-tr              = Trainer()
-pp              = Preprocessor()
+tr = Trainer()
+pp = Preprocessor()
 # =============================================
 print('#######################')
 print('###    Welcome to   ###')
@@ -72,7 +72,7 @@ elif args.csv:
     hyper_option    = '--csv'
 hyper_csv   = args.hyper
 prefix      = f"{args.title}_{infile.stem}"
-my_model    = f"{prefix}_{timestamp}.hdf5"
+my_model    = f"{prefix}_{timestamp}.keras"
 hyper_out   = Path(f"hyperparams_{prefix}_in_{timestamp}.csv")
 # =============================================
 if hyper_csv:
@@ -94,11 +94,12 @@ else:
 # =============================================
 if hyper_out.exists() or hyper_csv:
     # Preprocessing
-    df  = pd.read_csv(f"{infile.stem}.csv", usecols=['label', 'sequence'])
+    df  = pd.read_csv(f"{infile.stem}.csv",
+                      usecols=['label', 'sequence'])
     W   = pp.get_weight(df['label'])
     X   = pp.zero_padder(df['sequence'].map(pp.seq_tokenizer))
     y   = pp.transform_label(df['label'])
-    # =============================================
+# =============================================
     # Train-test split
     x_train, x_test, y_train, y_test = train_test_split(X,
                                                         y,
@@ -106,9 +107,11 @@ if hyper_out.exists() or hyper_csv:
                                                         test_size       = n_split,
                                                         random_state    = 13,
                                                         shuffle         = True)
-    # =============================================
-    # Create model
-    model   = tr.create_model(hp_dict, x_train.shape[1])
+# =============================================
+    # Create model and save model
+    print("### Starting training ###\n")
+    model   = tr.create_model(hp_dict,
+                              x_train.shape[1])
     fit     = tr.model_fit(model,
                            hp_dict,
                            x_train,
@@ -117,4 +120,5 @@ if hyper_out.exists() or hyper_csv:
                            y_test,
                            W)
 
-    fit.save(my_model)
+    model.save(my_model)
+# =============================================

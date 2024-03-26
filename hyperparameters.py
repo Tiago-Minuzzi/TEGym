@@ -5,17 +5,13 @@ import gc
 import os
 import sys
 import time
-import pickle
 import random
 import argparse
-import numpy as np
 import pandas as pd
-from typing import Dict
 from pathlib import Path
 from itertools import product
 from fasta_to_csv import fas_to_csv
 from sklearn.model_selection import train_test_split
-from sklearn.utils.class_weight import compute_class_weight
 # Hide warning messages
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 stderr = sys.stderr
