@@ -73,9 +73,10 @@ elif args.csv:
     hyper_option    = '--csv'
 hyper_csv   = args.hyper
 prefix      = f"{args.title}_{infile.stem}"
-my_model    = f"{prefix}_{timestamp}.keras"
+my_model    = Path(f"{prefix}_{timestamp}.keras")
 hyper_out   = Path(f"hyperparams_{prefix}_in_{timestamp}.csv")
-output_dir  = Path(f"{prefix}")
+output_dir  = Path(f"{prefix}_{timestamp}")
+out_config  = f"{prefix}_{timestamp}.toml"
 # =============================================
 if hyper_csv:
     hyper_df = pd.read_csv(hyper_csv)
@@ -124,7 +125,22 @@ if hyper_out.exists() or hyper_csv:
 
     model.save(my_model)
 # =============================================
+model_info = \
+f"""[model_info]
+model_name          = {my_model}
+Labels              = {df['label'].unique().tolist()}
+Maximum_length      = {hp_dict['seq_len']}
+Test_size           = {n_split}
+Training_samples    = {x_train.shape[0]}
+Validation_samples  = {x_test.shape[0]}
+"""
+# =============================================
 if my_model.exists():
     if not output_dir.exists():
         output_dir.mkdir()
     move(my_model, output_dir)
+    with open(out_config, 'w') as sd:
+        sd.write(model_info)
+        move(out_config, output_dir)
+
+print(">>> TEGym finished!")
