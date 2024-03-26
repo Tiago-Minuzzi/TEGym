@@ -9,6 +9,14 @@ For a better explanation on how to use the program, check the manual in PDF.
 
 TEGym is a work in progress to the date of this writing. We are trying to add more options and improvements as soon as possible.
 
+## Installation
+
+TEGym uses python version 3.11.
+
+Preferentially use python version >= 3.10 and a virtual enviroment or a conda enviroment. Install the required packages using:
+
+`pip install -r requirements.txt`
+
 ## Basic usage
 
 The most basic usage is simple. You only need a `FASTA` file or a `CSV` file contaning the sequences and the labels. The `CSV` table must contain the columns named `label` and `sequences`. The `FASTA` header/id must be in the `RepeatMasker` format (`sequenceID#label`).
