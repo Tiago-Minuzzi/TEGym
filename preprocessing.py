@@ -19,6 +19,7 @@ class Preprocessor:
         return sequence.translate(translation_table)
 
     def seq_tokenizer(self, sequencia: str) -> list:
+        """Transform nucleotide sequences in numeric arrays."""
         d: dict = {'a': 1, 'c': 2, 'g': 3, 't': 4}
         return [d.get(i, 5) for i in sequencia]
 
@@ -51,6 +52,7 @@ class Preprocessor:
         return to_categorical(encoder.fit_transform(labels))
 
     def get_weight(self, label_column: pd.Series) -> dict:
+        """Get weights for each class on the dataset."""
         d = {l: i for i, l in enumerate(label_column.unique())}
         rotulos         = label_column.map(d).values
         rotulos_unicos  = np.unique(rotulos)

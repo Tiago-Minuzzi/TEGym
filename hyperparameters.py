@@ -5,6 +5,7 @@ import gc
 import os
 import sys
 import time
+import toml
 import random
 import argparse
 import pandas as pd
@@ -57,6 +58,9 @@ parser.add_argument('-s',    '--split',
                     type    = float,
                     help    = 'Portion of the dataset to use as validation set. The major portion is used for model training. Default=0.1.')
 
+parser.add_argument('--custom_hyper',
+                    help    = 'Set the path to a TOML file containing custom hyperparameter values.')
+
 args    = parser.parse_args()
 
 # =============================================
@@ -67,11 +71,12 @@ SEED = 13
 # np.random.seed(SEED)
 tfrand.set_seed(SEED)
 
-n_runs          = args.runs
-modelo_nome     = args.title
+custom_hyper    = args.custom_hyper
 label_column    = 'label'
+modelo_nome     = args.title
+n_runs          = args.runs
+tamanho_teste   = args.split
 timestamp       = time.strftime("%Y%m%d-%H%M%S")
-
 if args.fasta:
     infasta = Path(args.fasta)
     fas_to_csv(infasta)
@@ -92,20 +97,31 @@ df          = pd.read_csv(arquivo, usecols=['sequence',label_column])
 # compute weights
 pesos_dict = preprocessor.get_weight(df[label_column])
 
-parameters = {'conv1':             [32,   64,     128],
-              'convN':             [24,   32,     64],
-              'kernel_size':       [6,    12],
-              'pool_size':         [3,    6],
-              'dense_neuron':      [32,   64,     128],
-              'dropout':           [0.0,  0.2,    0.4],
-              'batch_size':        [25,   50,     75],
-              'epochs':            [15,   20],
-              'emb_dim':           [6],
-              'seq_len':           [25_000],
-              'val_split':         [0.1],
-              'vocab_size':        [6],
-              'vocab_size_lab':    [len(df[label_column].unique())],
-              'weights':           pesos_dict}
+# parameters
+if not custom_hyper:
+    parameters = {'conv1':             [32,   64,     128],
+                  'convN':             [24,   32,     64],
+                  'kernel_size':       [6,    12],
+                  'pool_size':         [3,    6],
+                  'dense_neuron':      [32,   64,     128],
+                  'dropout':           [0.0,  0.2,    0.4],
+                  'batch_size':        [25,   50,     75],
+                  'epochs':            [15,   20],
+                  'emb_dim':           [6],
+                  'seq_len':           [25_000],
+                  'val_split':         [tamanho_teste],
+                  'vocab_size':        [6],
+                  'vocab_size_lab':    [len(df[label_column].unique())],
+                  'weights':           pesos_dict}
+else:
+    with open(custom_hyper) as handle:
+        config      = toml.load(handle)
+        parameters  = config['hyperparameters']
+        values_dict = {'val_split':      [tamanho_teste],
+                       'vocab_size':     [6],
+                       'vocab_size_lab': [len(df[label_column].unique())],
+                       'weights':        pesos_dict}
+        parameters.update(values_dict)
 
 combinations = list(product(*parameters.values()))
 h_params = random.sample(combinations, n_runs)
@@ -118,7 +134,6 @@ in_shape    = padded_seqs.shape[1]
 del df
 gc.collect()
 
-tamanho_teste = parameters["val_split"][0]
 x_train, x_test, y_train, y_test = train_test_split(padded_seqs,
                                                     labels,
                                                     test_size       = tamanho_teste,

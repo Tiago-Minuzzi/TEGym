@@ -2,6 +2,7 @@ import time
 import argparse
 import subprocess
 import pandas as pd
+from shutil import move
 from pathlib import Path
 from neural_net import Trainer
 from fasta_to_csv import fas_to_csv
@@ -31,7 +32,7 @@ group.add_argument('-c',    '--csv',
 "label", "sequence".''')
 
 parser.add_argument('-p',    '--hyper',
-                    help    = 'CSV file containing the hyperparametere metrics')
+                    help    = 'CSV file containing the hyperparametere metrics.')
 
 parser.add_argument('-m',    '--metric',
                     default = 'val_loss',
@@ -72,8 +73,9 @@ elif args.csv:
     hyper_option    = '--csv'
 hyper_csv   = args.hyper
 prefix      = f"{args.title}_{infile.stem}"
-my_model    = f"{prefix}_{timestamp}.keras"
+my_model    = Path(f"{prefix}_{timestamp}.keras")
 hyper_out   = Path(f"hyperparams_{prefix}_in_{timestamp}.csv")
+output_dir  = Path(f"{prefix}")
 # =============================================
 if hyper_csv:
     hyper_df = pd.read_csv(hyper_csv)
@@ -122,3 +124,8 @@ if hyper_out.exists() or hyper_csv:
 
     model.save(my_model)
 # =============================================
+if my_model.exists():
+    if not output_dir.exists():
+        output_dir.mkdir()
+    move(my_model, output_dir)
+    move(hyper_out, output_dir)

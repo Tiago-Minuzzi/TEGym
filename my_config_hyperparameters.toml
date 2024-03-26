@@ -1,0 +1,14 @@
+[hyperparameters] # DO NOT CHANGE THE NAME 'hyperparameters'
+# You can change the values between square brackets
+# Do NOT change the names before the equal sign
+# Separate the values between square brackets using commas
+conv1        = [32,   64,     128]
+convN        = [24,   32,     64]
+kernel_size  = [6,    12]
+pool_size    = [3,    6]
+dense_neuron = [32,   64,     128]
+dropout      = [0.0,  0.2,    0.4]
+batch_size   = [25,   50,     75]
+epochs       = [15,   20]
+emb_dim      = [6]
+seq_len      = [25_000]
