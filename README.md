@@ -11,9 +11,7 @@ TEGym is a work in progress to the date of this writing. We are trying to add mo
 
 ## Installation
 
-TEGym uses python version 3.11.
-
-Preferentially use python version >= 3.10 and a virtual enviroment or a conda enviroment. Install the required packages using:
+TEGym uses python version 3.11. Preferentially use python version >= 3.10 in a python virtual enviroment or a conda enviroment. Install the required packages using:
 
 `pip install -r requirements.txt`
 
