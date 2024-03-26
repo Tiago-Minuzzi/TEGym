@@ -73,3 +73,10 @@ When using a FASTA file as input, the program will convert it to a CSV file. Dep
 `python fasta_to_csv.py my_file.fasta`
 
 ---
+
+## TO-DO
+
+- [ ] Generate random sequences if only one class available.
+- [ ] Option to generate reverse complement.
+- [ ] Option to use k-mers.
+- [ ] Add GPU support.
