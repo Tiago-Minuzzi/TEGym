@@ -1,9 +1,11 @@
 # TEGym
 
+Build your own deep learning transposable elements classifier with ease.
+
 ## What is TEGym?
 
 TEGym is a program written in python to help people without deep learning expertise create a data driven transposable elements classifier, i.e., a model to classify transposable elements of species lacking enough data to train a classifier, using the data from a more
-closely related species. It automatizes preprocessing, hyperparameters testing and model training, resulting in a classifier suited for the needs of the user.
+closely related species. It automatizes preprocessing, hyperparameters testing and model training, resulting in a classifier suited for the needs of the user. Although TEGym was developed with transposable elements in mind, it can probably be used for other sequence classification tasks.
 
 For a better explanation on how to use the program, check the manual in PDF.
 
@@ -100,6 +102,7 @@ each sequence and the classication score ranging from 0 to 1.
 ## TO-DO
 
 - [ ] Generate random sequences if only one is class available.
+- [ ] Add example files.
 - [ ] Option to generate reverse complement.
 - [ ] Option to use k-mers.
 - [ ] Add GPU support.
