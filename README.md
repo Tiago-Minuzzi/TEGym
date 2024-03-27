@@ -101,8 +101,8 @@ each sequence and the classication score ranging from 0 to 1.
 
 ## TO-DO
 
-- [ ] Generate random sequences if only one is class available.
-- [ ] Add example files.
+- [x] Generate random sequences if only one is class available.
 - [ ] Option to generate reverse complement.
+- [ ] Add example files.
 - [ ] Option to use k-mers.
 - [ ] Add GPU support.
