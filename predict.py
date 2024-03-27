@@ -36,9 +36,11 @@ with open(input_fasta) as fa, open(model_info) as tmf:
     tmf_dict    = tmf['model_info']
     labels      = tmf_dict['Labels']
     labels_dict = {k: v for k, v in enumerate(labels)}
+    seq_len     = tmf_dict['Maximum_length']
 
     print("### Tokenizing and padding sequences ###\n")
-    fsqs = pp.zero_padder(list(map(pp.seq_tokenizer, fsqs)))
+    fsqs = pp.zero_padder(list(map(pp.seq_tokenizer, fsqs)),
+                          seq_len)
 
     print("### Starting prediction ###")
     predictions = model.predict(fsqs)
