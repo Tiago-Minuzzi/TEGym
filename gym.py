@@ -125,17 +125,17 @@ if hyper_out.exists() or hyper_csv:
 
     model.save(my_model)
 # =============================================
-model_info = \
-f"""[model_info]
-model_name          = "{my_model}"
-Labels              = {df['label'].unique().tolist()}
-Maximum_length      = {x_train.shape[1]}
-Test_size           = {n_split}
-Training_samples    = {x_train.shape[0]}
-Validation_samples  = {x_test.shape[0]}
-"""
 # =============================================
 if my_model.exists():
+    model_info = \
+    f"""[model_info]
+    model_name          = "{my_model}"
+    Labels              = {df['label'].unique().tolist()}
+    Maximum_length      = {x_train.shape[1]}
+    Test_size           = {n_split}
+    Training_samples    = {x_train.shape[0]}
+    Validation_samples  = {x_test.shape[0]}
+    """
     if not output_dir.exists():
         output_dir.mkdir()
     move(my_model, output_dir)
