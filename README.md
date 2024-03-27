@@ -97,6 +97,17 @@ each sequence and the classication score ranging from 0 to 1.
 | Seq04 | NonTE | 0.63 | 0.37 |
 | Seq05 | TE | 0.85 | 0.15 |
 
+## Create a negative class
+
+If your dataset has only one class, for instance, only sequences labeled as `TE`, you can use the script `create_negative_class.py` to create another class to train your model. Use the values `random` or `shuffled` with the flag `-c` to create random sequences or shuffle your sequences, respectively.
+
+Example:
+
+`python create_negative_class.py -f my_file.fasta -c shuffled`.
+
+The output is a `CSV` file with the prefix `TDS` containing your sequences and the newly created ones. Then you can use it with the main program.
+
+
 ---
 
 ## TO-DO
