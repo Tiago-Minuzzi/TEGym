@@ -62,7 +62,7 @@ with open(input_fasta) as fa, open(model_info) as tmf:
 # =============================================
     print("### Tokenizing and padding sequences ###\n")
     fsqs = pp.zero_padder(list(map(pp.seq_tokenizer, fsqs)),
-                          seq_len)
+                          pad_len=seq_len)
 
 # =============================================
     print("### Starting prediction ###")

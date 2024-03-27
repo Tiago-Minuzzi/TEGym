@@ -43,8 +43,12 @@ group.add_argument('-f',    '--fasta',
 group.add_argument('-c',    '--csv',
                     help    = '''Input CSV file containing columns "id", "label", "sequence".''')
 
+parser.add_argument('-o',    '--output',
+                    type    = str,
+                    help    = 'Set name for the output file.')
+
 parser.add_argument('-t',    '--title',
-                    default = 'TEgym',
+                    default = 'TEGym',
                     type    = str,
                     help    = 'Model identifier (optional).')
 
@@ -76,6 +80,7 @@ label_column    = 'label'
 modelo_nome     = args.title
 n_runs          = args.runs
 tamanho_teste   = args.split
+output_file     = args.output
 timestamp       = time.strftime("%Y%m%d-%H%M%S")
 if args.fasta:
     infasta = Path(args.fasta)
@@ -90,7 +95,10 @@ print('### hyperparameters search ###')
 print('##############################\n')
 
 basename    = arquivo.stem
-saida       = f"hyperparams_{modelo_nome}_on_{basename}_in_{timestamp}.csv"
+if not output_file: 
+    saida   = f"hyperparams_{modelo_nome}_on_{basename}_in_{timestamp}.csv"
+else:
+    saida   = output_file
 df          = pd.read_csv(arquivo, usecols=['sequence',label_column]).sort_values('label')
 
 

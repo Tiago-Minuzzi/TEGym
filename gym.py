@@ -56,7 +56,7 @@ parser.add_argument('-s',    '--split',
 args    = parser.parse_args()
 # =============================================
 # Variables
-timestamp       = time.strftime('%y%m%d%H%M%S')
+timestamp       = time.strftime('%y%m%d-%H%M%S')
 metric          = args.metric
 sort_order      = True
 hyper_option    = '--fasta'
@@ -79,7 +79,8 @@ output_dir  = Path(f"{prefix}_{timestamp}")
 out_config  = f"{prefix}_{timestamp}.toml"
 # =============================================
 if hyper_csv:
-    hyper_df = pd.read_csv(hyper_csv)
+    hyper_out = hyper_csv
+    hyper_df = pd.read_csv(hyper_out)
     if metric == 'val_accuracy':
         sort_order  = False
     elif metric not in ['val_loss', 'val_accuracy']:
@@ -89,13 +90,20 @@ if hyper_csv:
     hyper_df.sort_values(metric, inplace=True, ascending=sort_order)
     hp_dict = hyper_df.head(1).to_dict('records')[0]
 else:
+    hyper_sp = \
     subprocess.run(['python',       'hyperparameters.py',
                     hyper_option,   infile,
+                    '--output',     hyper_out,
                     '--title',      model_title,
                     '--runs',       str(n_runs),
                     '--split',      str(n_split)])
 # =============================================
-if hyper_out.exists() or hyper_csv:
+if hyper_csv or hyper_sp.returncode == 0:
+
+    hyper_df = pd.read_csv(hyper_out)
+    hyper_df.sort_values(metric, inplace=True, ascending=sort_order)
+    hp_dict = hyper_df.head(1).to_dict('records')[0]
+
     # Preprocessing
     df  = pd.read_csv(f"{infile.stem}.csv",
                       usecols=['label', 'sequence']).sort_values('label')
