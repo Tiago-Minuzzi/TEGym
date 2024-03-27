@@ -91,7 +91,7 @@ print('##############################\n')
 
 basename    = arquivo.stem
 saida       = f"hyperparams_{modelo_nome}_on_{basename}_in_{timestamp}.csv"
-df          = pd.read_csv(arquivo, usecols=['sequence',label_column])
+df          = pd.read_csv(arquivo, usecols=['sequence',label_column]).sort_values('label')
 
 
 # compute weights

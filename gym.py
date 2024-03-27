@@ -98,7 +98,7 @@ else:
 if hyper_out.exists() or hyper_csv:
     # Preprocessing
     df  = pd.read_csv(f"{infile.stem}.csv",
-                      usecols=['label', 'sequence'])
+                      usecols=['label', 'sequence']).sort_values('label')
     W   = pp.get_weight(df['label'])
     X   = pp.zero_padder(df['sequence'].map(pp.seq_tokenizer))
     y   = pp.transform_label(df['label'])
