@@ -98,7 +98,16 @@ df          = pd.read_csv(arquivo, usecols=['sequence',label_column]).sort_value
 pesos_dict = preprocessor.get_weight(df[label_column])
 
 # parameters
-if not custom_hyper:
+if custom_hyper:
+    with open(custom_hyper) as handle:
+        config      = toml.load(handle)
+        parameters  = config['hyperparameters']
+        values_dict = {'val_split':      [tamanho_teste],
+                       'vocab_size':     [6],
+                       'vocab_size_lab': [len(df[label_column].unique())],
+                       'weights':        pesos_dict}
+        parameters.update(values_dict)
+else:
     parameters = {'conv1':             [32,   64,     128],
                   'convN':             [24,   32,     64],
                   'kernel_size':       [6,    12],
@@ -112,15 +121,6 @@ if not custom_hyper:
                   'vocab_size':        [6],
                   'vocab_size_lab':    [len(df[label_column].unique())],
                   'weights':           pesos_dict}
-else:
-    with open(custom_hyper) as handle:
-        config      = toml.load(handle)
-        parameters  = config['hyperparameters']
-        values_dict = {'val_split':      [tamanho_teste],
-                       'vocab_size':     [6],
-                       'vocab_size_lab': [len(df[label_column].unique())],
-                       'weights':        pesos_dict}
-        parameters.update(values_dict)
 
 combinations = list(product(*parameters.values()))
 h_params = random.sample(combinations, n_runs)
@@ -143,7 +143,6 @@ del padded_seqs, labels
 with open(saida, "w+") as sd:
     keys = list(parameters.keys())
     header = ",".join([*parameters.keys(),
-                       *parameters.keys(),
                        "loss",
                        "accuracy",
                        "val_loss",
@@ -174,7 +173,6 @@ with open(saida, "w+") as sd:
 
         metrics = {k: v[-1] for k, v in history.history.items()}
         gc.collect()
-        h_param.update(parameters)
         h_param.update(metrics)
         sd.write(f"{','.join([str(i) for i in h_param.values()])}\n")
         sd.flush()
