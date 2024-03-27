@@ -78,11 +78,28 @@ When using a FASTA file as input, the program will convert it to a CSV file. Dep
 
 `python fasta_to_csv.py my_file.fasta`
 
+## Predict
+
+After your model is trained using gym.py, you can use it as a classifier by running the script predict.py. It has three mandatory arguments: an FASTA file with sequences to be classified, the path to the trained model and the path to the TOML file with model info.
+
+`python predict.py -f file.fasta -m my_model.keras -i my_model_info.toml`
+
+The output is a CSV file containing the classification prediction for
+each sequence and the classication score ranging from 0 to 1.
+
+| id | prediction | TE_score | NonTE_score |
+| :---: | :---: | :---: | :---: |
+| Seq01 | TE | 0.98 | 0.02 |
+| Seq02 | TE | 0.72 | 0.28 |
+| Seq03 | NonTE | 1.0 | 0.0 |
+| Seq04 | NonTE | 0.63 | 0.37 |
+| Seq05 | TE | 0.85 | 0.15 |
+
 ---
 
 ## TO-DO
 
-- [ ] Generate random sequences if only one class available.
+- [ ] Generate random sequences if only one is class available.
 - [ ] Option to generate reverse complement.
 - [ ] Option to use k-mers.
 - [ ] Add GPU support.
