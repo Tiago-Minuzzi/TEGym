@@ -108,7 +108,6 @@ if not custom_hyper:
                   'batch_size':        [25,   50,     75],
                   'epochs':            [15,   20],
                   'emb_dim':           [6],
-                  'seq_len':           [25_000],
                   'val_split':         [tamanho_teste],
                   'vocab_size':        [6],
                   'vocab_size_lab':    [len(df[label_column].unique())],
@@ -126,8 +125,7 @@ else:
 combinations = list(product(*parameters.values()))
 h_params = random.sample(combinations, n_runs)
 
-padded_seqs = preprocessor.zero_padder(df.sequence.map(preprocessor.seq_tokenizer).values,
-                                       parameters['seq_len'][0])
+padded_seqs = preprocessor.zero_padder(df.sequence.map(preprocessor.seq_tokenizer).values)
 
 labels      = preprocessor.transform_label(df[label_column])
 in_shape    = padded_seqs.shape[1]
