@@ -1,10 +1,16 @@
+import os
+import sys
 import time
 import argparse
 import pandas as pd
 from pathlib import Path
+# Hide warning messages
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '4'
+stderr = sys.stderr
+sys.stderr = open(os.devnull, 'w')
 from preprocessing import Sampler
+sys.stderr = stderr
 from fasta_to_csv import fas_to_csv
-from Bio.SeqIO.FastaIO import SimpleFastaParser
 
 # ==============================================
 
@@ -38,6 +44,8 @@ output_tab  = f"TDS_{input_fasta.stem}_{timestamp}.csv"
 create_sequences = args.create
 
 # ==============================================
+print("### Starting program ###")
+print("### Converting FASTA to CSV ###")
 fas_to_csv(input_fasta)
 
 if input_csv.exists():
@@ -48,6 +56,7 @@ if input_csv.exists():
 
     copia       = df.copy()
 
+    print("### Creating sequences ###")
     if create_sequences == 'shuffled':
         copia['sequence']   = copia['sequence'].map(sampler.seq_shuffler)
         copia['id']         = 'shuffled_' + copia['id']
@@ -62,8 +71,10 @@ if input_csv.exists():
         copia['id']         = 'random_' + copia.index.astype(str)
         copia['label']      = 'Other'
 
+    print("### Writing to file ###")
     df = pd.concat([df, copia], ignore_index=True)
     df.to_csv(output_tab, index=False)
 
     print(">>> Done!")
+    print(f">>> Saved as {output_tab}")
 
