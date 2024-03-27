@@ -39,7 +39,7 @@ parser.add_argument('-m',    '--metric',
                     help    = 'choose hyperparameters based on metric. Values are "val_loss" (default) or "val_accuracy".')
 
 parser.add_argument('-t',    '--title',
-                    default = 'TEgym',
+                    default = 'TEGym',
                     type    = str,
                     help    = 'Model identifier (optional).')
 
