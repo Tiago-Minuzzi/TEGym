@@ -71,6 +71,11 @@ if input_csv.exists():
         copia['id']         = 'random_' + copia.index.astype(str)
         copia['label']      = 'Other'
 
+    elif create_sequences not in ['random', 'shuffled']:
+        print(">>> Warning:")
+        print('>>> Invalid value for "--create". Using default (shuffled).\n')
+        metric = 'shuffled'
+
     print("### Writing to file ###")
     df = pd.concat([df, copia], ignore_index=True)
     df.to_csv(output_tab, index=False)
