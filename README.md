@@ -12,7 +12,7 @@ Build your own deep learning transposable elements classifier with ease.
 
 - [Basic usage](#usage)
 
-- [Running steps independentely](#running)
+- [Running steps independently](#running)
 
 - [Customizing hyperparameters search](#custom)
 
