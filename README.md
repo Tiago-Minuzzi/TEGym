@@ -2,7 +2,7 @@
 
 Build your own deep learning transposable elements classifier with ease.
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10891457.svg)](https://doi.org/10.5281/zenodo.10891457)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10891456.svg)](https://doi.org/10.5281/zenodo.10891456)
 
 ## Table of contents
 
@@ -133,7 +133,7 @@ The output is a `CSV` file with the prefix `TDS` containing your sequences and t
 
 If you have used it and have found it helpful and useful, please cite:
 
-Minuzzi Freire da Fontoura Gomes, T. (2024). TEGym: Build your own deep learning transposable elements classifier with ease. (v0.3.1). Zenodo. https://doi.org/10.5281/zenodo.10891457
+Minuzzi Freire da Fontoura Gomes, T. (2024). TEGym: Build your own deep learning transposable elements classifier with ease. Zenodo. https://doi.org/10.5281/zenodo.10891456
 
 ---
 
