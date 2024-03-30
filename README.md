@@ -113,8 +113,8 @@ each sequence and the classication score ranging from 0 to 1.
 | :---: | :---: | :---: | :---: |
 | Seq01 | TE | 0.98 | 0.02 |
 | Seq02 | TE | 0.72 | 0.28 |
-| Seq03 | NonTE | 1.0 | 0.0 |
-| Seq04 | NonTE | 0.63 | 0.37 |
+| Seq03 | NonTE | 0.0 | 1.0 |
+| Seq04 | NonTE | 0.37 | 0.63 |
 | Seq05 | TE | 0.85 | 0.15 |
 
 ## Create a negative class <a name="negative"></a>

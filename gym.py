@@ -28,8 +28,7 @@ group.add_argument('-f',    '--fasta',
                     help    = '''Input fasta file with id and labels formatted as: ">seqId#Label".''')
 
 group.add_argument('-c',    '--csv',
-                    help    = '''Input CSV file containing columns "id",
-"label", "sequence".''')
+                    help    = '''Input CSV file containing columns "label" and "sequence".''')
 
 parser.add_argument('-p',    '--hyper',
                     help    = 'CSV file containing the hyperparametere metrics.')
