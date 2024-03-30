@@ -83,7 +83,7 @@ or
 	  -h, --help            show this help message and exit
 	  -f FASTA, --fasta FASTA
 	                        Input fasta file with id and labels formatted as: ">seqId#Label".
-	  -c CSV, --csv CSV     Input CSV file containing columns "id", "label", "sequence".
+	  -c CSV, --csv CSV     Input CSV file containing columns "label" and "sequence".
 	  -p HYPER, --hyper HYPER
 	                        CSV file containing the hyperparametere metrics.
 	  -m METRIC, --metric METRIC
